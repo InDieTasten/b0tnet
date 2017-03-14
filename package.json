@@ -1,0 +1,19 @@
+{
+  "name": "b0tnet",
+  "version": "1.0.0",
+  "description": "An ASCII RPG in hacking theme",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "b0tnet"
+  ],
+  "author": "InDieTasten",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "ts-loader": "^2.0.1",
+    "typescript": "^2.2.1",
+    "webpack": "^2.2.1"
+  }
+}
