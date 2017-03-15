@@ -2,10 +2,10 @@
   "name": "b0tnet",
   "version": "1.0.0",
   "description": "An ASCII RPG in hacking theme",
-  "main": "index.js",
+  "main": "not-existing",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.config.js --content-base build/"
+    "start": "webpack-dev-server --config webpack.config.js"
   },
   "keywords": [
     "b0tnet"
@@ -17,5 +17,8 @@
     "ts-loader": "^2.0.1",
     "typescript": "^2.2.1",
     "webpack": "^2.2.1"
+  },
+  "repository": {
+    "url": "https://github.com/InDieTasten/b0tnet.git"
   }
 }

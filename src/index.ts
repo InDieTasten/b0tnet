@@ -13,7 +13,7 @@ console.info("B0tnet Game launching...");
 
     // attach terminal to dom element
     let terminalObj = new Terminal(nativeTerminal);
-
-}())
+    
+}());
 
 console.info("B0tnet Game launched successfully :)");
