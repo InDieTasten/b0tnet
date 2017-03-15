@@ -1,28 +1,19 @@
-var path = require("path")
-
 module.exports = {
- entry: './app/index.ts',
+ entry: './src/index.ts',
  output: {
    filename: 'bundle.js',
-   path: path.resolve(__dirname, "build"),
-   publicPath: "/assets/"
+   path: __dirname
  },
  module: {
    rules: [
      {
-       enforce: 'pre',
-       test: /\.js$/,
-       loader: "source-map-loader"
+       test: /\.tsx?$/,
+       loader: 'ts-loader',
+       exclude: /node_modules/,
      },
-     {
-       enforce: 'pre',
-       test: /\.ts$/,
-       use: "source-map-loader"
-     }
    ]
  },
  resolve: {
-   extensions: [".ts", ".js"]
+   extensions: [".tsx", ".ts", ".js"]
  },
- devtool: 'inline-source-map',
 };
