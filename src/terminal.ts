@@ -1,18 +1,23 @@
 import { position } from "./utility/position"
 import { size } from "./utility/size"
-import { color_palette } from "./utility/color16"
+import { color_palette, color_names } from "./utility/color16"
+
+export class View extends HTMLElement {}
 
 export class Terminal {
 
     private target: HTMLDivElement;
     private document: HTMLDocument;
 
+    private buffersDirty: boolean = true;
+    private lastView: View;
     private textBuffer: string = "";
     private textColorBuffer: number[] = [];
 
     private dimensions: size;
     private cursorPosition: number = 0;
     private cursorBlink: boolean = true;
+    private selectedTextColor: number = color_names.light_grey;
 
     constructor(targetElement: HTMLDivElement, dimensions: size) {
         
@@ -36,7 +41,21 @@ export class Terminal {
      */
     public setCursorPos(position: position) : boolean {
         
-        throw "Not implemented";
+        this.buffersDirty = true;
+        
+        position.x = Math.floor(position.x);
+        position.y = Math.floor(position.y);
+
+        if (position.x >= 0
+            && position.x < this.dimensions.width
+            && position.y >= 0
+            && position.y < this.dimensions.height) {
+
+            this.cursorPosition = position.y * this.dimensions.width + position.x;
+            
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -44,6 +63,7 @@ export class Terminal {
      */
     public setCursorBlinking(blink: boolean) {
         
+        this.buffersDirty = true;
         throw "Not implemented";
     }
 
@@ -62,10 +82,26 @@ export class Terminal {
      */
     public write(content: string) : number {
         
-        let preStart = this.textBuffer.substring(0, this.cursorPosition-1);
-        let postEnd = this.textBuffer.substring(this.cursorPosition + content.length);
-        
-        this.textBuffer = preStart + content + postEnd;
+        this.buffersDirty = true;
+
+        // text buffer update
+        {
+            let preStart = this.textBuffer.substring(0, this.cursorPosition);
+            let postEnd = this.textBuffer.substring(this.cursorPosition + content.length);
+            
+            this.textBuffer = preStart + content + postEnd;
+        }
+        {
+            let preStart = this.textColorBuffer.slice(0, this.cursorPosition);
+            let postEnd = this.textColorBuffer.slice(this.cursorPosition + content.length);
+
+            let buffercontent = [];
+            let i = 0;
+            while (i < content.length)
+                buffercontent[i++] = this.selectedTextColor;
+
+            this.textColorBuffer = preStart.concat(buffercontent.concat(postEnd));
+        }
 
         // increment cursorPosision
         this.cursorPosition += content.length;
@@ -73,10 +109,11 @@ export class Terminal {
         // scroll
         let excessLength = this.textBuffer.length - (this.dimensions.width * this.dimensions.height)
         if (excessLength > 0) {
-            let linesToScroll = Math.floor(excessLength / this.dimensions.width);
+            let linesToScroll = Math.ceil(excessLength / this.dimensions.width);
             
-            // cut away amount of lines to scroll from beginning of text buffer
+            // cut away amount of lines to scroll from beginning buffers
             this.textBuffer = this.textBuffer.substr(linesToScroll * this.dimensions.width);
+            this.textColorBuffer = this.textColorBuffer.slice(linesToScroll * this.dimensions.width);
             
             // also shift the cursor position
             this.cursorPosition -= linesToScroll * this.dimensions.width;
@@ -89,14 +126,13 @@ export class Terminal {
      * setTextColor
      */
     public setTextColor(color: number) {
-        
-        throw "Not implemented";
+        this.selectedTextColor = color;
     }
 
     /**
      * display
      */
-    public display() {
+    public display(view?: View) {
 
         // remove all childs of target        
         while (this.target.firstChild) {
@@ -104,17 +140,32 @@ export class Terminal {
         }
 
         // calculate new view
-        let view = this.constructFrame();
-        this.target.appendChild(view);
+        if (view == null)
+            view = this.constructView();
+
+        let stylingContainer = document.createElement("div");
+
+        stylingContainer.style.display = "inline-block"
+        stylingContainer.style.fontFamily = "monospace";
+        stylingContainer.style.whiteSpace = "pre";
+        stylingContainer.style.border = "1px solid #c0c0c0";
+        stylingContainer.style.padding = "5px";
+
+        stylingContainer.appendChild(view);
+
+        this.target.appendChild(stylingContainer);
 
     }
 
-    private constructFrame() : HTMLElement {
+    public constructView() : View {
+
+        if (!this.buffersDirty)
+            return this.lastView;
 
         let i = 0;
-        let container = this.document.createElement("div");
+        let container = this.document.createElement("font");
 
-        while (i < this.dimensions.width * this.dimensions.height)
+        while (i < this.textBuffer.length)
         {
             let currentColor = this.textColorBuffer[i];
             let fragment = this.document.createElement("font");
@@ -124,7 +175,7 @@ export class Terminal {
             let startingIndex = i;
             let brokenString = "";
             do {
-                if (i % this.dimensions.width === 0) {
+                if (i % this.dimensions.width === 0 && i !== 0) {
                     brokenString += this.textBuffer.substring(startingIndex, i) + "<br>";
                     startingIndex = i;
                 }
@@ -137,6 +188,8 @@ export class Terminal {
 
         }
 
+        this.lastView = container;
+        this.buffersDirty = false;
         return container;
     }
 }
