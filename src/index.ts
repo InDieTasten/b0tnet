@@ -12,7 +12,11 @@ console.info("B0tnet Game launching...");
     document.body.appendChild(nativeTerminal);
 
     // attach terminal to dom element
-    let terminalObj = new Terminal(nativeTerminal);
+    let terminalObj = new Terminal(nativeTerminal, { width: 80, height: 25 });
+
+    terminalObj.write("Hello World!");
+
+    //terminalObj.display();
     
 }());
 
