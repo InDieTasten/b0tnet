@@ -1,10 +1,12 @@
-/// <reference path="../node_modules/strongly-typed-events/strongly-typed-events.d.ts" />
+/// <refer ence path="../node_modules/strongly-typed-events/strongly-typed-events.d.ts" />
 
+import * as _ from 'strongly-typed-events'
 
 import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
 
-//let x = require("strongly-typed-events");
+declare require;
+let x = require("strongly-typed-events");
 
 console.info("B0tnet Game launching...");
 
