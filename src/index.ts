@@ -1,12 +1,18 @@
+/// <reference path="../node_modules/strongly-typed-events/strongly-typed-events.d.ts" />
+
 
 import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
+
+//let x = require("strongly-typed-events");
 
 console.info("B0tnet Game launching...");
 
 (function Startup() {
     // initialize game
     document.body.style.backgroundColor = "#101010";
+
+    EventDispatcher.apply
 
     // create dom element for terminal
     let nativeTerminal = document.createElement("div");
@@ -19,26 +25,28 @@ console.info("B0tnet Game launching...");
     setInterval(() => {
         // random message:
         var text = "";
-        var possible = "0000000000000000000000000000000000000123456789ÄÄÄBCDEF\n\n\n";
-        for( var i=0; i < 9; i++ )
+        var possible = "0000000000000000000000000000000000000123456789ABCDEF";
+        for( var i=0; i < 7; i++ )
             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
+        terminalObj.setCursorPos({
+            x: 0.5 + Math.random() * 73,
+            y: 0.5 + Math.random() * 24
+        });
         terminalObj.setTextColor(Math.ceil(Math.random()*16)-1);
         terminalObj.write("0x" + text + " ");
 
-    }, 50);
-    terminalObj.setTextColor(color_names.green);
+    }, 10);
 
     setInterval(() => {
-        // random message:
-        //terminalObj.clear();
-    }, 1000);
+        terminalObj.scroll(1);
+    }, 30);
 
     (function draw() {
         setTimeout(() => {
             requestAnimationFrame(draw);
             terminalObj.display();
-        }, 1000/20);
+        }, 1000/30);
     })();
     
 

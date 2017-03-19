@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --config webpack.config.js"
   },
   "keywords": [
-    "b0tnet"
+    "b0tnet", "game"
   ],
   "author": "InDieTasten",
   "license": "UNLICENSED",
@@ -20,5 +20,8 @@
   },
   "repository": {
     "url": "https://github.com/InDieTasten/b0tnet.git"
+  },
+  "dependencies": {
+    "strongly-typed-events": "^0.4.2"
   }
 }
