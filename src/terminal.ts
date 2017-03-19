@@ -1,5 +1,6 @@
 import { position } from "./utility/position"
 import { size } from "./utility/size"
+import { repeat_string } from "./utility/string"
 import { color_palette, color_names } from "./utility/color16"
 
 export class View extends HTMLElement {}
@@ -26,6 +27,16 @@ export class Terminal {
         this.document = targetElement.ownerDocument;
 
         this.dimensions = dimensions;
+
+        this.clear();
+    }
+
+    /**
+     * clear
+     */
+    public clear() {
+        this.write(repeat_string(" ", this.dimensions.width * this.dimensions.height));
+        this.setCursorPos({x: 0, y: 0});
     }
 
     /**
@@ -33,7 +44,7 @@ export class Terminal {
      */
     public getSize() : size {
 
-        throw "Not implemented";
+        return this.dimensions;
     }
 
     /**
@@ -48,11 +59,18 @@ export class Terminal {
 
         if (position.x >= 0
             && position.x < this.dimensions.width
-            && position.y >= 0
-            && position.y < this.dimensions.height) {
+            && position.y >= 0) {
+
+            let linesToScroll = position.y - this.dimensions.height;
+            if (linesToScroll > 0) {
+                //debugger;
+                this.scroll(linesToScroll);
+                position.y -= linesToScroll;
+            }
 
             this.cursorPosition = position.y * this.dimensions.width + position.x;
             
+            return true;
         } else {
             return false;
         }
@@ -71,8 +89,10 @@ export class Terminal {
      * getCursorPos
      */
     public getCursorPos() : position {
-        
-        throw "Not implemented";
+        return {
+            x: this.cursorPosition % this.dimensions.width,
+            y: Math.floor(this.cursorPosition / this.dimensions.width)
+        }
     }
 
 
@@ -80,7 +100,48 @@ export class Terminal {
      * write
      * @returns {Number} Number of line breaks that occurred while writing the content
      */
-    public write(content: string) : number {
+    /**
+     * write
+     */
+    public write(content: string) {
+        
+        let substrings = content.split("\n");
+
+        this.write_raw(substrings[0]);
+
+        for (let i = 1; i < substrings.length; i++) {
+            let pos = this.getCursorPos();
+            this.setCursorPos({x: 0, y: pos.y + 1});
+
+            this.write_raw(substrings[i]);
+        }
+
+    }
+
+    /**
+     * scroll
+     */
+    public scroll(lineCount: number) {
+        
+        // cut away amount of lines to scroll from beginning buffers
+        this.textBuffer = this.textBuffer.substr(lineCount * this.dimensions.width);
+        this.textColorBuffer = this.textColorBuffer.slice(lineCount * this.dimensions.width);
+        
+        // also shift the cursor position
+        this.cursorPosition -= lineCount * this.dimensions.width;
+
+        // append trailing padding to buffer, in case nobody writes to it after scrolling
+        this.textBuffer += repeat_string(" ", this.dimensions.width * this.dimensions.height - this.textBuffer.length);
+
+        let buffercontent = [];
+        let i = 0;
+        while (i < this.dimensions.width * this.dimensions.height - this.textColorBuffer.length)
+            buffercontent[i++] = this.selectedTextColor;
+        
+        this.textColorBuffer = this.textColorBuffer.concat(buffercontent);
+    }
+
+    public write_raw(content: string) : number {
         
         this.buffersDirty = true;
 
@@ -103,7 +164,7 @@ export class Terminal {
             this.textColorBuffer = preStart.concat(buffercontent.concat(postEnd));
         }
 
-        // increment cursorPosision
+        // increment cursorPosition
         this.cursorPosition += content.length;
 
         // scroll
@@ -111,12 +172,7 @@ export class Terminal {
         if (excessLength > 0) {
             let linesToScroll = Math.ceil(excessLength / this.dimensions.width);
             
-            // cut away amount of lines to scroll from beginning buffers
-            this.textBuffer = this.textBuffer.substr(linesToScroll * this.dimensions.width);
-            this.textColorBuffer = this.textColorBuffer.slice(linesToScroll * this.dimensions.width);
-            
-            // also shift the cursor position
-            this.cursorPosition -= linesToScroll * this.dimensions.width;
+            this.scroll(linesToScroll);
         }
 
         return 0;
@@ -145,7 +201,7 @@ export class Terminal {
 
         let stylingContainer = document.createElement("div");
 
-        stylingContainer.style.display = "inline-block"
+        stylingContainer.style.display = "inline-block";
         stylingContainer.style.fontFamily = "monospace";
         stylingContainer.style.whiteSpace = "pre";
         stylingContainer.style.border = "1px solid #c0c0c0";
