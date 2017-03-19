@@ -13,7 +13,7 @@ console.info("B0tnet Game launching...");
     document.body.appendChild(nativeTerminal);
 
     // attach terminal to dom element
-    let terminalObj = new Terminal(nativeTerminal, { width: 80, height: 25 });
+    let terminalObj = new Terminal(nativeTerminal, { width: 81, height: 25 });
 
     terminalObj.display();
     setInterval(() => {
@@ -26,7 +26,7 @@ console.info("B0tnet Game launching...");
         terminalObj.setTextColor(Math.ceil(Math.random()*16)-1);
         terminalObj.write("0x" + text + " ");
 
-    }, 100);
+    }, 50);
     terminalObj.setTextColor(color_names.green);
 
     setInterval(() => {
