@@ -19,7 +19,7 @@ console.info("B0tnet Game launching...");
     setInterval(() => {
         // random message:
         var text = "";
-        var possible = "0000000000000000000000000000000000000123456789ABCDEF\n\n\n";
+        var possible = "0000000000000000000000000000000000000123456789ÄÄÄBCDEF\n\n\n";
         for( var i=0; i < 9; i++ )
             text += possible.charAt(Math.floor(Math.random() * possible.length));
 
@@ -38,7 +38,7 @@ console.info("B0tnet Game launching...");
         setTimeout(() => {
             requestAnimationFrame(draw);
             terminalObj.display();
-        }, 1000/30);
+        }, 1000/20);
     })();
     
 

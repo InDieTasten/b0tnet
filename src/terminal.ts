@@ -9,11 +9,15 @@ export class Terminal {
 
     private target: HTMLDivElement;
     private document: HTMLDocument;
+    private viewTarget: HTMLElement;
+    private inputElement: HTMLInputElement;
 
     private buffersDirty: boolean = true;
     private lastView: View;
     private textBuffer: string = "";
     private textColorBuffer: number[] = [];
+
+    private inputBuffer: string = "";
 
     private dimensions: size;
     private cursorPosition: number = 0;
@@ -28,7 +32,46 @@ export class Terminal {
 
         this.dimensions = dimensions;
 
+        // prepare view target
+        this.viewTarget = document.createElement("div");
+        this.viewTarget.style.display = "inline-block";
+        this.viewTarget.style.fontFamily = "monospace";
+        this.viewTarget.style.whiteSpace = "pre";
+        this.viewTarget.style.border = "1px solid #c0c0c0";
+        this.viewTarget.style.padding = "5px";
+        this.viewTarget.tabIndex = -1;
+
+        // prepare input element
+        this.inputElement = document.createElement("input");
+        this.inputElement.style.opacity = "0";
+        this.inputElement.style.width = "0";
+        this.inputElement.style.height = "0";
+        this.attachInputListener();
+
+        this.target.appendChild(this.inputElement);
+        this.target.appendChild(this.viewTarget);
         this.clear();
+    }
+
+    private attachInputListener() {
+        this.viewTarget.addEventListener("focus", (ev: Event) => {
+            this.inputElement.focus();
+        });
+        this.inputElement.addEventListener("input", (ev: Event) => {
+            let target = (<HTMLInputElement> ev.target);
+            this.inputBuffer += target.value;
+            target.value = "";
+        });
+    }
+
+    /**
+     * Flushes/clears the input buffer
+     * @returns {string} buffer content before flush
+     */
+    public flushInputBuffer() : string {
+        let tmp = this.inputBuffer;
+        this.inputBuffer = "";
+        return tmp;
     }
 
     /**
@@ -191,25 +234,15 @@ export class Terminal {
     public display(view?: View) {
 
         // remove all childs of target        
-        while (this.target.firstChild) {
-            this.target.removeChild(this.target.firstChild)
+        while (this.viewTarget.firstChild) {
+            this.viewTarget.removeChild(this.viewTarget.firstChild)
         }
 
         // calculate new view
         if (view == null)
             view = this.constructView();
 
-        let stylingContainer = document.createElement("div");
-
-        stylingContainer.style.display = "inline-block";
-        stylingContainer.style.fontFamily = "monospace";
-        stylingContainer.style.whiteSpace = "pre";
-        stylingContainer.style.border = "1px solid #c0c0c0";
-        stylingContainer.style.padding = "5px";
-
-        stylingContainer.appendChild(view);
-
-        this.target.appendChild(stylingContainer);
+        this.viewTarget.appendChild(view);
 
     }
 
