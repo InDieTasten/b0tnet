@@ -1,26 +1,16 @@
 import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
 
-console.info("DSLify Test START ---");
+console.info("expression-sandbox Test START ---");
 
-let dslify = require("dslify");
+var n = require;
 
+var compiler = n('expression-sandbox');
+var code = compiler('function() { debugger; }()');
+ 
+var result = code({shout: function(thing: any) {console.log("Aye: ", thing)}});
 
-var fn = "function() { (function() { sout(this.document); })() }";
-var shouter = dslify.transform(fn);
-
-var dsl : any = {
-    sout: function(something: any) {
-        console.info("Aye: ", something);
-        return something + "!!";
-    },
-    word: "unicorns",
-    this: dsl
-};
-
-shouter(dsl);
-
-console.info("DSLify Test END ---");
+console.info("expression-sandbox Test END ---");
 
 
 console.info("B0tnet Game launching...");

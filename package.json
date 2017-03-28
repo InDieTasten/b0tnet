@@ -24,6 +24,6 @@
     "url": "https://github.com/InDieTasten/b0tnet.git"
   },
   "dependencies": {
-    "dslify": "^0.3.0"
+    "expression-sandbox": "^1.1.0"
   }
 }
