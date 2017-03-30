@@ -7,101 +7,101 @@ interface term {
     /**
      * Writes text to the screen, using the current text and background colors
      */
-    write: (text: string) => void
+    write: (text: string) => void;
 
     /**
      * Writes text to the screen using the specified text and background colors
      */
-    blit: (text: string, textColors: number[], backgroundColors: number[]) => void
+    blit: (text: string, textColors: number[], backgroundColors: number[]) => void;
 
     /**
      * Clears the entire screen
      */
-    clear: () => void
+    clear: () => void;
 
     /**
      * Clears the line the sursor is on
      */
-    clearLine: () => void
+    clearLine: () => void;
 
     /**
      * Returns the x and y position of the cursor
      */
-    getCursorPos: () => position
+    getCursorPos: () => position;
 
     /**
      * Sets the cursor's position
      */
-    setCursorPos: (position: position) => boolean
+    setCursorPos: (position: position) => boolean;
 
     /**
      * Disables the blinking or turns it on
      */
-    setCursorBlink: (enable: boolean) => void
+    setCursorBlink: (enable: boolean) => void;
 
     /**
      * Returns whether the terminal supports color
      */
-    isColor: () => boolean
+    isColor: () => boolean;
 
     /**
      * Returns the width and height values stating the size of the screen
      */
-    getSize: () => size
+    getSize: () => size;
 
     /**
      * Scrolls the terminal n lines
      */
-    scroll: (n: number) => void
+    scroll: (n: number) => void;
 
     /**
      * Redirects terminal output to another terminal object
      */
-    redirect: (target: term) => term
+    redirect: (target: term) => term;
 
     /**
      * Returns the current terminal object
      */
-    current: () => term
+    current: () => term;
 
     /**
      * Returns the original terminal object
      */
-    native: () => term
+    native: () => term;
 
     /**
      * Sets the text color of the terminal
      */
-    setTextColor: (color: number) => void
+    setTextColor: (color: number) => void;
 
     /**
      * Returns the current text color of the terminal
      */
-    getTextColor: () => number
+    getTextColor: () => number;
 
     /**
      * Sets the background color of the terminal
      */
-    setBackgroundColor: (color: number) => void
+    setBackgroundColor: (color: number) => void;
 
     /**
      * Returns the current background color of the terminal
      */
-    getBackgroundColor: () => number
+    getBackgroundColor: () => number;
 
     /**
      * Returns a section of the text channel of the output buffer
      */
-    readTextBuffer: (start: number, length?: number) => string
+    readTextBuffer: (start: number, length?: number) => string;
 
     /**
      * Returns a section of the text color channel of the output buffer
      */
-    readTextColorBuffer: (start: number, length?: number) => number[]
+    readTextColorBuffer: (start: number, length?: number) => number[];
 
     /**
      * Returns a section of the background color channel of the output buffer
      */
-    readBackgroundColorBuffer: (start: number, length?: number) => number[]
-    
+    readBackgroundColorBuffer: (start: number, length?: number) => number[];
+
 }
