@@ -23,7 +23,15 @@ class FsNode {
 }
 
 export class File extends FsNode {
-
+    
+    private _content : string;
+    public get content() : string {
+        return this._content;
+    }
+    public set content(v : string) {
+        this._content = v;
+    }
+    
 }
 
 export class FileSystem {
