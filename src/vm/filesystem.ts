@@ -22,6 +22,18 @@ class FsNode {
 
 }
 
+export class Directory extends FsNode {
+
+    private _childNodes : FsNode[];
+    public get childNodes() : FsNode[] {
+        return this._childNodes;
+    }
+    public set childNodes(v : FsNode[]) {
+        this._childNodes = v;
+    }
+
+}
+
 export class File extends FsNode {
     
     private _content : string;
