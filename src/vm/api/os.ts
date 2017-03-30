@@ -14,9 +14,9 @@ interface os {
     version: () => string
 
     /**
-     * Registers a callback
+     * Registers a callback to a given event type. wildcard filters events, that will trigger
      */
-    pullEvent: (callback: (event: event) => void, targetEvents?: string) => void
+    pullEvent: (wildcard: string, callback: (event: event) => void) => void
 
     /**
      * Adds an event to the event queue
@@ -38,4 +38,8 @@ interface os {
      */
     defer: (seconds: number, callback: () => void) => void
 
+    /**
+     * Runs a callback repeatedly in an interval of specified amount of seconds until the callback returns true
+     */
+    interval: (seconds: number, callback: () => boolean) => void
 }
