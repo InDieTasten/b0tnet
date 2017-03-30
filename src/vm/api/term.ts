@@ -104,4 +104,8 @@ interface term {
      */
     readBackgroundColorBuffer: (start: number, length?: number) => number[];
 
+    /**
+     * Registers a callback for reading a value from user.
+     */
+    read: (callback: (input: string, key: number) => boolean, placeholder?: string) => void;
 }
