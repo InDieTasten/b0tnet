@@ -2,20 +2,20 @@ import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
 import { VM } from "./vm/vm"
 
-console.info("expression-sandbox Test START ---");
+console.log("expression-sandbox Test START ---");
 
-var n = require;
+var compiler = require('expression-sandbox');
+var code = compiler('(function () { try { \
+\
+    write("Hello World!\\n>"); \
+\
+} catch(err) { log(err) } })()');
 
-var compiler = n('expression-sandbox');
-var code = compiler('(function () {})()');
- 
-var result = code({shout: function(thing: any) {console.log("Aye: ", thing)}});
-
-console.info("expression-sandbox Test END ---");
+console.log("expression-sandbox Test END ---");
 
 let vm = new VM();
 
-console.info("B0tnet Game launching...");
+console.log("B0tnet Game launching...");
 
 (function Startup() {
     // initialize game
@@ -28,6 +28,15 @@ console.info("B0tnet Game launching...");
     // attach terminal to dom element
     let terminalObj = new Terminal(nativeTerminal, { width: 81, height: 25 });
 
+    code({
+        write: function(msg: string) {
+            terminalObj.write(msg);
+        },
+        log: function(msg: any) {
+            console.info(msg);
+        }
+    });
+
     (function draw() {
         setTimeout(() => {
             requestAnimationFrame(draw);
@@ -39,4 +48,4 @@ console.info("B0tnet Game launching...");
 
 }());
 
-console.info("B0tnet Game launched successfully :)");
+console.log("B0tnet Game launched successfully :)");
