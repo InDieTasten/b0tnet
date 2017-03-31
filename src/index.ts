@@ -2,6 +2,9 @@ import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
 import { VM } from "./vm/vm"
 
+require("style-loader!../node_modules/xterm/dist/xterm.css");
+let xterm = require("xterm");
+
 console.log("expression-sandbox Test START ---");
 
 var compiler = require('expression-sandbox');
@@ -25,24 +28,37 @@ console.log("B0tnet Game launching...");
     let nativeTerminal = document.createElement("div");
     document.body.appendChild(nativeTerminal);
 
-    // attach terminal to dom element
-    let terminalObj = new Terminal(nativeTerminal, { width: 81, height: 25 });
+    let term = new xterm();
+    term.open(nativeTerminal);
+    term.resize(80, 25);
 
-    code({
-        write: function(msg: string) {
-            terminalObj.write(msg);
-        },
-        log: function(msg: any) {
-            console.info(msg);
-        }
-    });
+    term.write("Hello,\t how are you?");
 
     (function draw() {
         setTimeout(() => {
-            requestAnimationFrame(draw);
-            terminalObj.display();
-        }, 1000/60);
+            term.write("Hello,\t how are you?");
+            draw();
+        }, 1000);
     })();
+
+    // attach terminal to dom element
+    //let terminalObj = new Terminal(nativeTerminal, { width: 81, height: 25 });
+
+    // code({
+    //     write: function(msg: string) {
+    //         terminalObj.write(msg);
+    //     },
+    //     log: function(msg: any) {
+    //         console.info(msg);
+    //     }
+    // });
+
+    // (function draw() {
+    //     setTimeout(() => {
+    //         requestAnimationFrame(draw);
+    //         terminalObj.display();
+    //     }, 1000/60);
+    // })();
     
 
 
