@@ -40,7 +40,7 @@ export class Terminal {
         this.dimensions = dimensions;
 
         // prepare view target
-        this.viewTarget = document.createElement("div");
+        this.viewTarget = this.document.createElement("div");
         this.viewTarget.style.display = "inline-block";
         this.viewTarget.style.fontFamily = "monospace";
         this.viewTarget.style.whiteSpace = "pre";
@@ -49,7 +49,7 @@ export class Terminal {
         this.viewTarget.tabIndex = -1;
 
         // prepare input element
-        this.inputElement = document.createElement("input");
+        this.inputElement = this.document.createElement("input");
         this.inputElement.style.opacity = "0";
         this.inputElement.style.width = "0";
         this.inputElement.style.height = "0";
