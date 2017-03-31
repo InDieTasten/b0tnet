@@ -1,3 +1,4 @@
+import * as ste from "./utility/strongly-typed-events"
 import { position } from "./utility/position"
 import { size } from "./utility/size"
 import { repeat_string } from "./utility/string"
@@ -19,10 +20,16 @@ export class Terminal {
 
     private inputBuffer: string = "";
 
+    private _onInputBufferChange = new ste.EventDispatcher<Terminal, string>();
+    public get onInputBufferChange(): ste.IEvent<Terminal, string> {
+        return this._onInputBufferChange.asEvent();
+    }
+
     private dimensions: size;
     private cursorPosition: number = 0;
-    private cursorBlink: boolean = true;
-    private selectedTextColor: number = color_names.light_grey;
+    private _cursorBlink: boolean = true;
+    private _selectedTextColor: number = color_names.light_grey;
+
 
     constructor(targetElement: HTMLDivElement, dimensions: size) {
         
@@ -60,6 +67,7 @@ export class Terminal {
         this.inputElement.addEventListener("input", (ev: Event) => {
             let target = (<HTMLInputElement> ev.target);
             this.inputBuffer += target.value;
+            this._onInputBufferChange.dispatch(this, this.inputBuffer);
             target.value = "";
         });
     }
@@ -179,7 +187,7 @@ export class Terminal {
         let buffercontent = [];
         let i = 0;
         while (i < this.dimensions.width * this.dimensions.height - this.textColorBuffer.length)
-            buffercontent[i++] = this.selectedTextColor;
+            buffercontent[i++] = this._selectedTextColor;
         
         this.textColorBuffer = this.textColorBuffer.concat(buffercontent);
     }
@@ -202,7 +210,7 @@ export class Terminal {
             let buffercontent = [];
             let i = 0;
             while (i < content.length)
-                buffercontent[i++] = this.selectedTextColor;
+                buffercontent[i++] = this._selectedTextColor;
 
             this.textColorBuffer = preStart.concat(buffercontent.concat(postEnd));
         }
@@ -225,7 +233,7 @@ export class Terminal {
      * setTextColor
      */
     public setTextColor(color: number) {
-        this.selectedTextColor = color;
+        this._selectedTextColor = color;
     }
 
     /**
