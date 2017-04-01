@@ -32,13 +32,12 @@ console.log("B0tnet Game launching...");
     term.open(nativeTerminal);
     term.resize(80, 25);
 
-    term.write("Hello,\t how are you?");
-
+    let controlChar = String.fromCharCode(parseInt("33", 8));
     (function draw() {
         setTimeout(() => {
-            term.write("Hello,\t how are you?");
+            term.write(`Hello from ${controlChar}[1;3;3${Math.floor(0.5 + Math.random()*8)}mxterm.js${controlChar}[0m `);
             draw();
-        }, 1000);
+        }, 10);
     })();
 
     // attach terminal to dom element
