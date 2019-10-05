@@ -2,7 +2,7 @@ import { Terminal } from "./terminal"
 import { color_names } from "./utility/color16"
 import { VM } from "./vm/vm"
 
-require("style-loader!../node_modules/xterm/dist/xterm.css");
+require("style-loader!../node_modules/xterm/css/xterm.css");
 let xterm = require("xterm");
 
 console.log("expression-sandbox Test START ---");
