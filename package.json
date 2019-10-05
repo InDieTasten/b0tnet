@@ -5,7 +5,7 @@
   "main": "not-existing",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.config.js",
+    "start": "webpack --config webpack.config.js --watch",
     "build": "webpack --config webpack.config.js"
   },
   "keywords": [
@@ -28,7 +28,7 @@
     "url": "https://github.com/InDieTasten/b0tnet.git"
   },
   "dependencies": {
-    "expression-sandbox": "^1.1.0",
+    "expression-sandbox": "^1.1.1",
     "xterm": "^4.0.2"
   }
 }
