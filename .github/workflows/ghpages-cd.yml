@@ -36,3 +36,4 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.GH_PAT }}
         BRANCH: gh-pages
         CNAME: b0tnet.indietasten.net
+        FOLDER: '' # root folder of the repository
