@@ -27,6 +27,6 @@
   },
   "dependencies": {
     "expression-sandbox": "^1.1.0",
-    "xterm": "^2.4.0"
+    "xterm": "^4.0.2"
   }
 }
