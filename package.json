@@ -15,7 +15,9 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "@types/node": "^7.0.10",
+    "css-loader": "^0.28.0",
     "source-map-loader": "^0.2.0",
+    "style-loader": "^0.16.1",
     "ts-loader": "^2.0.1",
     "typescript": "^2.2.1",
     "webpack": "^2.2.1"
@@ -24,6 +26,7 @@
     "url": "https://github.com/InDieTasten/b0tnet.git"
   },
   "dependencies": {
-    "expression-sandbox": "^1.1.0"
+    "expression-sandbox": "^1.1.0",
+    "xterm": "^2.4.0"
   }
 }
