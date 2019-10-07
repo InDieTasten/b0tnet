@@ -2,26 +2,25 @@
   "name": "b0tnet",
   "version": "1.0.0",
   "description": "An ASCII RPG in hacking theme",
-  "main": "not-existing",
+  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --config webpack.config.js --watch",
-    "build": "webpack --config webpack.config.js"
+    "start": "webpack --config webpack.config.js --watch --mode=development",
+    "build": "webpack --config webpack.config.js --mode=production"
   },
   "keywords": [
     "b0tnet",
     "game"
   ],
   "author": "InDieTasten",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "devDependencies": {
-    "@types/node": "^7.10.7",
     "css-loader": "^3.2.0",
     "source-map-loader": "^0.2.4",
-    "style-loader": "^0.16.1",
-    "ts-loader": "^2.3.7",
+    "style-loader": "^1.0.0",
+    "ts-loader": "^6.2.0",
     "typescript": "^3.6.3",
-    "webpack": "^2.7.0",
+    "webpack": "^4.41.0",
     "webpack-cli": "^3.3.9"
   },
   "repository": {
