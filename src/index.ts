@@ -14,17 +14,38 @@ console.log("B0tnet Game launching...");
     let terminalElement = document.createElement("div");
     document.body.appendChild(terminalElement);
 
-    let nativeTerm = new Terminal();
+    let nativeTerm = new Terminal({
+        scrollback: 100
+    });
     nativeTerm.open(terminalElement);
     nativeTerm.resize(80, 25);
+    nativeTerm.write('BrowserOS 1.0');
+    nativeTerm.write('\r\n$ ');
+    nativeTerm.onLineFeed(() => {
+        console.log("onLineFeed");
+    });
+    nativeTerm.onCursorMove(() => {
+        console.log("onCursorMove");
+    });
+    nativeTerm.onData(e => {
+        console.log("onData: ", e);
+    })
+    nativeTerm.onKey(e => {
+        console.log("onKey: ", e);
 
-    let controlChar = String.fromCharCode(parseInt("33", 8));
-    (function draw() {
-        setTimeout(() => {
-            nativeTerm.write(`Hello from ${controlChar}[1;3;3${Math.floor(0.5 + Math.random()*8)}mxterm.js${controlChar}[0m `);
-            draw();
-        }, 10);
-    })();
+        const printable = !e.domEvent.altKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
+
+        if (e.domEvent.key == "Enter") {
+            nativeTerm.write('\r\n$ ');
+        } else if (e.domEvent.keyCode === 8) {
+            // Do not delete the prompt
+            if (nativeTerm.buffer.cursorX > 2) {
+                nativeTerm.write('\b \b');
+            }
+        } else if (printable) {
+            nativeTerm.write(e.key);
+        }
+    });
 }());
 
 console.log("B0tnet Game launched successfully :)");
