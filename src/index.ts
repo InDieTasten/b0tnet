@@ -25,7 +25,7 @@ console.log("B0tnet Game launching...");
     ]);
 
     nativeTerm.loadAddon(virtualMachine);
-    nativeTerm.
+
     nativeTerm.open(terminalElement);
     nativeTerm.resize(80, 25);
     // nativeTerm.write('BrowserOS 0.1');
