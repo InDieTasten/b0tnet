@@ -1,6 +1,8 @@
 import '../node_modules/xterm/css/xterm.css';
 import { VM } from "./vm/vm"
 import { Terminal } from 'xterm';
+import { Machine } from './machine';
+import { Shell } from './programs/shell';
 
 let vm = new VM();
 
@@ -14,38 +16,45 @@ console.log("B0tnet Game launching...");
     let terminalElement = document.createElement("div");
     document.body.appendChild(terminalElement);
 
+    
     let nativeTerm = new Terminal({
         scrollback: 100
     });
+    let virtualMachine = new Machine([
+        Shell.Program
+    ]);
+
+    nativeTerm.loadAddon(virtualMachine);
+    nativeTerm.
     nativeTerm.open(terminalElement);
     nativeTerm.resize(80, 25);
-    nativeTerm.write('BrowserOS 1.0');
-    nativeTerm.write('\r\n$ ');
-    nativeTerm.onLineFeed(() => {
-        console.log("onLineFeed");
-    });
-    nativeTerm.onCursorMove(() => {
-        console.log("onCursorMove");
-    });
-    nativeTerm.onData(e => {
-        console.log("onData: ", e);
-    })
-    nativeTerm.onKey(e => {
-        console.log("onKey: ", e);
+    // nativeTerm.write('BrowserOS 0.1');
+    // nativeTerm.write('\r\n$ ');
+    // nativeTerm.onLineFeed(() => {
+    //     console.log("onLineFeed");
+    // });
+    // nativeTerm.onCursorMove(() => {
+    //     console.log("onCursorMove");
+    // });
+    // nativeTerm.onData(e => {
+    //     console.log("onData: ", e);
+    // })
+    // nativeTerm.onKey(e => {
+    //     console.log("onKey: ", e);
 
-        const printable = !e.domEvent.altKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
+    //     const printable = !e.domEvent.altKey && !e.domEvent.ctrlKey && !e.domEvent.metaKey;
 
-        if (e.domEvent.key == "Enter") {
-            nativeTerm.write('\r\n$ ');
-        } else if (e.domEvent.keyCode === 8) {
-            // Do not delete the prompt
-            if (nativeTerm.buffer.cursorX > 2) {
-                nativeTerm.write('\b \b');
-            }
-        } else if (printable) {
-            nativeTerm.write(e.key);
-        }
-    });
+    //     if (e.domEvent.key == "Enter") {
+    //         nativeTerm.write('\r\n$ ');
+    //     } else if (e.domEvent.key === 'Backspace') {
+    //         Do not delete the prompt
+    //         if (nativeTerm.buffer.cursorX > 2) {
+    //             nativeTerm.write('\b \b');
+    //         }
+    //     } else if (printable) {
+    //         nativeTerm.write(e.key);
+    //     }
+    // });
 }());
 
 console.log("B0tnet Game launched successfully :)");
