@@ -1,15 +1,25 @@
 import { Program } from './program';
-import { IEvent } from './event';
+// import { Position } from './utility/position';
 
 export class Environment {
-    term: TermApi;
+    console: ConsoleApi;
+    os: OsApi;
     programs: Program[];
 }
 
-export interface TermApi {
-    onKey: IEvent<{ key: string, domEvent: KeyboardEvent }>
-    write: (data: string) => void;
-    clear: () => void;
-    getCursorX: () => number;
-    getCursorY: () => number;
+export interface ConsoleApi {
+    write(text: string): void;
+    clear(): void;
+    // getCursorPos(): Position;
+    // setCursorPos(position: Position): boolean;
+    // setCursorPos(x: number, y: number): boolean;
+}
+
+export interface OsApi {
+    pollEvent(): Promise<OsEvent>;
+    queueEvent(event: OsEvent): void;
+}
+
+export interface OsEvent {
+    type: string;
 }
