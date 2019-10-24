@@ -1,5 +1,4 @@
-
-import { position } from "../../utility/position"
+import { Position } from "../../utility/position"
 import { size } from "../../utility/size"
 
 interface term {
@@ -27,12 +26,12 @@ interface term {
     /**
      * Returns the x and y position of the cursor
      */
-    getCursorPos: () => position;
+    getCursorPos: () => Position;
 
     /**
      * Sets the cursor's position
      */
-    setCursorPos: (position: position) => boolean;
+    setCursorPos: (position: Position) => boolean;
 
     /**
      * Disables the blinking or turns it on
