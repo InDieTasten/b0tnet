@@ -1,28 +1,32 @@
 import { Program } from "../program";
-import { Environment } from "../environment";
+import { Environment, KeyEvent, CharacterEvent } from "../environment";
 import { Terminal } from "xterm";
 
 export class Shell implements Program {
     static Program = new Shell();
 
     name = 'shell';
-    
-    private env: Environment
-    private callback: (exitCode: number) => void;
 
-    main(env: Environment, callback: (exitCode: number) => void): void {
-        this.env = env;
-        this.callback = callback;
-        this.printOs();
-        this.prompt();
+    async main(system: Environment): Promise<number> {
+        this.printOs(system);
+        await this.prompt(system);
+
+        while (true) {
+            var event = await system.os.pollEvent();
+            if (event instanceof CharacterEvent) {
+                system.console.write(event.character);
+            }
+        }
     }
 
-    printOs() {
-        this.env.console.clear();
-        this.env.console.write("BrowserOS 0.1\r\n");
+    private printOs(system: Environment) {
+        system.console.clear();
+        system.console.write(system.os.getVersion() + "\r\n");
     }
 
-    prompt() {
-        this.env.console.write("> ");
+    private async prompt(system: Environment): Promise<void> {
+        system.console.write(JSON.stringify(await system.console.getCursorPos()) + "\r\n");
+        system.console.write(JSON.stringify(await system.console.getCursorPos()) + "\r\n");
+        system.console.write("> ");
     }
 }

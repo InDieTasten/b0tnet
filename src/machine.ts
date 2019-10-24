@@ -1,12 +1,13 @@
 import { Terminal, IDisposable, ITerminalAddon } from "xterm";
-import { Environment, OsEvent } from "./environment";
+import { Environment, OsEvent, CharacterEvent } from "./environment";
 import { Program } from "./program";
+import { XTermDisplay } from "./vm/x-term-display";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
     private environment: Environment = new Environment();
-    private eventQueue: OsEvent[];
-    private eventResolvers: any[];
+    private eventQueue: OsEvent[] = [];
+    private eventResolvers: Array<(value?: OsEvent | PromiseLike<OsEvent>) => void> = [];
 
     constructor(private programs: Program[]) {
     }
@@ -14,10 +15,7 @@ export class Machine implements ITerminalAddon {
     activate(terminal: Terminal): void {
         terminal.writeln("Initializing runtime environment...");
         this.environment = {
-            console: {
-                write: (text: string) => terminal.write(text),
-                clear: () => terminal.clear()
-            },
+            console: new XTermDisplay(terminal),
             os: {
                 pollEvent: (): Promise<OsEvent> => {
                     return new Promise<OsEvent>((resolve: (value?: OsEvent | PromiseLike<OsEvent>)
@@ -25,18 +23,23 @@ export class Machine implements ITerminalAddon {
                 },
                 queueEvent: (event: OsEvent) => {
                     this.eventQueue.push(event);
-                }
+                },
+                getVersion: () => "BrowserOS v0.1"
             },
             programs: this.programs
         };
 
+        this._disposables.push(terminal.onData((data) => {
+            if (data.length === 1) {
+                if (data.charCodeAt(0) >= 32) {
+                    this.eventQueue.push(new CharacterEvent(data));
+                    setTimeout(() => this.publishEvents(), 0);
+                }
+            }
+        }));
+
         this._disposables.push(terminal.onKey((e) => {
             console.log("Key: ", e.key, e.domEvent.keyCode);
-
-            let escape = String.fromCharCode(27);
-            if (e.domEvent.keyCode == 70) {
-                terminal.write("offset" + escape + "[6n");
-            }
         }));
         this._disposables.push(terminal.onData((e) => {
             console.log("Data: ", e);
@@ -58,6 +61,16 @@ export class Machine implements ITerminalAddon {
         }
     }
     
+    private publishEvents(): void {
+        while (this.eventQueue.length > 0) {
+            let currentEvent = this.eventQueue.shift();
+            
+            this.eventResolvers.forEach(listener => {
+                listener(currentEvent);
+            });
+        }
+    }
+
     dispose(): void {
         this._disposables.forEach(d => d.dispose());
         this._disposables.length = 0;
