@@ -1,4 +1,4 @@
-# b0tnet
+![# b0tnet](https://repository-images.githubusercontent.com/85112149/e96a4f00-fa8a-11e9-8f81-fa2ae4bffe68)
 
 This is an attempt to create a text adventure hacking game using xterm.js and Typescript.
 
