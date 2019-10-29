@@ -3,6 +3,7 @@ import { VM } from "./vm/vm"
 import { Terminal } from 'xterm';
 import { Machine } from './machine';
 import { Shell } from './programs/shell';
+import { ALongTimeAgo } from './programs/alongtimeago';
 
 let vm = new VM();
 
@@ -21,7 +22,8 @@ console.log("B0tnet Game launching...");
         scrollback: 100
     });
     let virtualMachine = new Machine([
-        Shell.Program
+        Shell.Program,
+        ALongTimeAgo.Program
     ]);
 
     nativeTerm.loadAddon(virtualMachine);

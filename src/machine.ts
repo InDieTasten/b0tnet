@@ -48,7 +48,7 @@ export class Machine implements ITerminalAddon {
         terminal.writeln("Machine launched successfully!");
         terminal.writeln("Launching shell...");
 
-        var shellProgram = this.programs.filter(program => program.name === 'shell')[0];
+        var shellProgram = this.programs.filter(program => program.name === 'alongtimeago')[0];
         if (shellProgram) {
             shellProgram.main(this.environment, (exitCode) => {
                 if (exitCode) {
