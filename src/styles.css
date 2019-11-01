@@ -7,7 +7,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(rgba(6, 29, 2, 0.6), rgba(11, 0, 17, 0.7)), url(https://images.pexels.com/photos/2294135/pexels-photo-2294135.jpeg?auto=compress&cs=tinysrgb);
+    background: linear-gradient(rgba(12, 0, 34, 0.7), rgba(12, 0, 34, 0.7)),
+      url(https://i.pinimg.com/originals/4c/9f/f1/4c9ff1f84d726f966103ff802972e9ae.gif);
     background-size: cover;
 }
 
@@ -179,7 +180,4 @@ background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), l
 z-index: 2;
 background-size: 100% 2px, 3px 100%;
 pointer-events: none;
-}
-.crt {
-animation: textShadow 1.6s infinite;
 }
