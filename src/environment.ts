@@ -1,13 +1,11 @@
-import { Program } from './program';
 import { Position } from './utility/position';
 
 export class Environment {
-    console: ConsoleApi;
+    console: TerminalApi;
     os: OsApi;
-    programs: Program[];
 }
 
-export interface ConsoleApi {
+export interface TerminalApi {
     write(text: string): void;
     clear(): void;
 

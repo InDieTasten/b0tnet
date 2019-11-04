@@ -1,8 +1,8 @@
-import { ConsoleApi } from "../environment";
+import { TerminalApi } from "../environment";
 import { Terminal, IDisposable } from "xterm";
 import { Position } from "../utility/position";
 
-export class XTermDisplay implements ConsoleApi, IDisposable {
+export class XTermDisplay implements TerminalApi, IDisposable {
     private disposables: IDisposable[] = [];
 
     private xterm: Terminal;

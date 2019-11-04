@@ -1,16 +1,13 @@
 import { Terminal, IDisposable, ITerminalAddon } from "xterm";
 import { Environment, OsEvent, CharacterEvent } from "./environment";
-import { Program } from "./program";
 import { XTermDisplay } from "./vm/x-term-display";
+import { Shell } from "./programs/shell";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
     private environment: Environment = new Environment();
     private eventQueue: OsEvent[] = [];
     private eventResolvers: Array<(value?: OsEvent | PromiseLike<OsEvent>) => void> = [];
-
-    constructor(private programs: Program[]) {
-    }
 
     activate(terminal: Terminal): void {
         terminal.writeln("Initializing runtime environment...");
@@ -25,8 +22,7 @@ export class Machine implements ITerminalAddon {
                     this.eventQueue.push(event);
                 },
                 getVersion: () => "BrowserOS v0.1"
-            },
-            programs: this.programs
+            }
         };
 
         this._disposables.push(terminal.onData((data) => {
@@ -48,17 +44,15 @@ export class Machine implements ITerminalAddon {
         terminal.writeln("Machine launched successfully!");
         terminal.writeln("Launching shell...");
 
-        var shellProgram = this.programs.filter(program => program.name === 'alongtimeago')[0];
-        if (shellProgram) {
-            shellProgram.main(this.environment, (exitCode) => {
-                if (exitCode) {
-                    terminal.writeln(`Error: Shell exited with code ${exitCode}`);
-                }
-                terminal.writeln("Shutdown...");
-            });
-        } else {
-            terminal.writeln("Error: shell program not found");
-        }
+        let shellProgram = new Shell(this.environment, this.environment.console);
+        shellProgram.main([]).then((exitCode) => {
+            if (exitCode) {
+                terminal.writeln(`Error: Shell exited with code ${exitCode}`);
+            }
+            terminal.writeln("Shutdown...");
+        }).catch(error => {
+            terminal.writeln(`ERROR: Error was thrown: "${error}"`);
+        });
     }
     
     private publishEvents(): void {
