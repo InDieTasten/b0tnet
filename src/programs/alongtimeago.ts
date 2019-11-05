@@ -1,5 +1,4 @@
 import { Process } from "../os/process";
-import { Environment, CharacterEvent } from "../environment";
 
 export class ALongTimeAgo extends Process {
 
@@ -16,7 +15,7 @@ export class ALongTimeAgo extends Process {
         this.updateDisplay();
 
         while (true) {
-            await this.env.os.pollEvent();
+            await this.os.pollEvent();
         }
     }
 
@@ -48,7 +47,7 @@ export class ALongTimeAgo extends Process {
             return;
         }
 
-        this.term.write("\r\n\n\n\n")
+        this.io.stdout.write("\r\n\n\n\n")
 
         for (var line = 1; line < 14; line++) {
             let lineText = this.film[ (this.g_currentFrame * this.LINES_PER_FRAME) + line];
@@ -56,9 +55,9 @@ export class ALongTimeAgo extends Process {
                 lineText = ' ';
             }
 
-            this.term.write("      " + lineText + "\r\n");
+            this.io.stdout.write("      " + lineText + "\r\n");
         }
-        this.term.write("\r\n\n\n\n\n\n\n");
+        this.io.stdout.write("\r\n\n\n\n\n\n\n");
     }
 
     private validateFrame(frameNumber: number) {

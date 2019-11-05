@@ -2,6 +2,7 @@ import { Terminal, IDisposable, ITerminalAddon } from "xterm";
 import { Environment, OsEvent, CharacterEvent } from "./environment";
 import { XTermDisplay } from "./vm/x-term-display";
 import { Shell } from "./programs/shell";
+import { MemoryStream } from "./os/io";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
@@ -44,14 +45,31 @@ export class Machine implements ITerminalAddon {
         terminal.writeln("Machine launched successfully!");
         terminal.writeln("Launching shell...");
 
-        let shellProgram = new Shell(this.environment, this.environment.console);
-        shellProgram.main([]).then((exitCode) => {
+        // memory stream test code
+        let memoryStream = new MemoryStream();
+        memoryStream.write("A").then(() => {
+            memoryStream.readCharacter().then((char: string) => {
+                console.log("Aye, I read the A");
+                memoryStream.readCharacter().then((char: string) => {
+                    console.log("Yes, I've been waiting for ", char);
+                });
+                console.log("Now sending the second character");
+                memoryStream.writeCharacter("B");
+            });
+        });
+
+        let shellProgram = new Shell(null, null, null, null, null);
+        shellProgram.main([]).then((exitCode: number) => {
             if (exitCode) {
                 terminal.writeln(`Error: Shell exited with code ${exitCode}`);
             }
             terminal.writeln("Shutdown...");
-        }).catch(error => {
-            terminal.writeln(`ERROR: Error was thrown: "${error}"`);
+        }).catch((error: any) => {
+            terminal.writeln(`\x1b[1;31mERROR: Error was thrown: "${error}"\x1b[0m`);
+            if (error instanceof Error) {
+                console.log(error);
+                terminal.write(error.stack.replace(/\n/g, "\n\r"));
+            }
         });
     }
     

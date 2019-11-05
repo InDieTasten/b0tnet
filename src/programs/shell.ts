@@ -1,27 +1,28 @@
 import { Process } from "../os/process";
-import { Environment, CharacterEvent } from "../environment";
+import { CharacterEvent } from "../environment";
 
 export class Shell extends Process {
     static Name = 'shell';
 
     async main(args: string[]): Promise<number> {
-        this.printOs();
+        await this.printOs();
         this.prompt();
 
         while (true) {
-            var event = await this.env.os.pollEvent();
+            var event = await this.os.pollEvent();
             if (event instanceof CharacterEvent) {
-                this.term.write(event.character);
+                this.io.stdout.write(event.character);
             }
         }
     }
 
-    private printOs() {
-        this.term.clear();
-        this.term.write(this.env.os.getVersion() + "\r\n");
+    private async printOs(): Promise<void> {
+        await this.term.clear();
+        await this.io.stdout.writeLine(this.os.getName());
     }
 
-    private prompt() {
-        this.term.write("> ");
+    private async prompt(): Promise<string> {
+        await this.io.stdout.write("> ");
+        return await this.io.stdin.readLine();
     }
 }
