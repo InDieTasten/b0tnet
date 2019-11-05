@@ -1,7 +1,7 @@
 import { Position } from './utility/position';
 
 export class Environment {
-    console: TerminalApi;
+    console?: TerminalApi;
     os: OsApi;
 }
 

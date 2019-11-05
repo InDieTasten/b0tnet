@@ -1,33 +1,37 @@
-import { TerminalApi } from "../environment";
 import { Terminal, IDisposable } from "xterm";
-import { Position } from "../utility/position";
+import { TermApi, TerminalSize, CursorPosition } from "../os/apis/term";
+import { IoApi } from "../os/apis/io";
 
-export class XTermDisplay implements TerminalApi, IDisposable {
+export class XTermDisplay implements TermApi, IDisposable {
     private disposables: IDisposable[] = [];
-
+    
     private xterm: Terminal;
-
+    
     constructor(xterm: Terminal) {
         this.xterm = xterm;
-        this.disposables.push(xterm.onKey((e) => {
+        // TODO expose this as io.InputStream
+        this.disposables.push(xterm.onKey(() => {
             
         }));
-        this.disposables.push(xterm.onData((data) => {
-
+        this.disposables.push(xterm.onData(() => {
+            
         }));
     }
-
-    write(text: string): void {
-        this.xterm.write(text);
+    
+    getSize(): Promise<TerminalSize> {
+        throw new Error("Method not implemented.");
     }
-    clear(): void {
-        this.xterm.clear();
+    setCursorPosition(position: CursorPosition): Promise<boolean> {
+        if (position.x > 0 && position.x <= this.xterm.cols && position.y > 0 && position.y <= this.xterm.rows) {
+            this.xterm.write(`\x1B[${position.x};${position.y}M`); // cursor position CUP
+            return Promise.resolve(true);
+        }
+        return Promise.resolve(false);
     }
-    getCursorPos(): Promise<Position> {
-        let esc = String.fromCharCode(27);
-        this.xterm.write(`${esc}[6n`); // device status report DSR
-        let resolver: (value?: Position | PromiseLike<Position>) => void;
-        let promise = new Promise<Position>((resolve: (value?: Position | PromiseLike<Position>)
+    getCursorPosition(): Promise<CursorPosition> {
+        this.xterm.write("\x1b[6n"); // device status report DSR
+        let resolver: (value?: CursorPosition | PromiseLike<CursorPosition>) => void;
+        let promise = new Promise<CursorPosition>((resolve: (value?: CursorPosition | PromiseLike<CursorPosition>)
             => void) => resolver = resolve);
         let disposable = this.xterm.onData((data) => {
             let match = data.match(/^\x1B\[(\d+);(\d+)R$/);
@@ -43,14 +47,15 @@ export class XTermDisplay implements TerminalApi, IDisposable {
 
         return promise;
     }
-    setCursorPos(x: number, y: number): boolean {
-        if (x > 0 && x <= this.xterm.cols && y > 0 && y <= this.xterm.rows) {
-            this.xterm.write(`\x1B[${x};${y}M`); // cursor position CUP
-            return true;
-        }
-        return false;
-    }
 
+    // expose this as io.OutputStream
+    write(text: string): void {
+        this.xterm.write(text);
+    }
+    clear(): Promise<void> {
+        this.xterm.clear();
+        return Promise.resolve();
+    }
     dispose(): void {
         this.disposables.forEach(d => d.dispose());
         this.disposables.length = 0;

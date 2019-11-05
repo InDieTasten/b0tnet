@@ -4,6 +4,14 @@ export class MemoryStream implements InputStream, OutputStream {
     private buffer: string[] = [];
     private bufferListeners: Array<() => boolean> = [];
 
+    exposeInput(): InputStream {
+        return this as InputStream;
+    }
+
+    exposeOutput(): OutputStream {
+        return this as OutputStream;
+    }
+
     readCharacter(): Promise<string> {
         if (this.buffer.length) {
             // buffer already contains characters to read

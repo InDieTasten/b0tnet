@@ -13,7 +13,6 @@ export class Machine implements ITerminalAddon {
     activate(terminal: Terminal): void {
         terminal.writeln("Initializing runtime environment...");
         this.environment = {
-            console: new XTermDisplay(terminal),
             os: {
                 pollEvent: (): Promise<OsEvent> => {
                     return new Promise<OsEvent>((resolve: (value?: OsEvent | PromiseLike<OsEvent>)
@@ -22,7 +21,7 @@ export class Machine implements ITerminalAddon {
                 queueEvent: (event: OsEvent) => {
                     this.eventQueue.push(event);
                 },
-                getVersion: () => "BrowserOS v0.1"
+                getVersion: () => "HackOS v0.1"
             }
         };
 
@@ -45,20 +44,7 @@ export class Machine implements ITerminalAddon {
         terminal.writeln("Machine launched successfully!");
         terminal.writeln("Launching shell...");
 
-        // memory stream test code
-        let memoryStream = new MemoryStream();
-        memoryStream.write("A").then(() => {
-            memoryStream.readCharacter().then((char: string) => {
-                console.log("Aye, I read the A");
-                memoryStream.readCharacter().then((char: string) => {
-                    console.log("Yes, I've been waiting for ", char);
-                });
-                console.log("Now sending the second character");
-                memoryStream.writeCharacter("B");
-            });
-        });
-
-        let shellProgram = new Shell(null, null, null, null, null);
+        let shellProgram = new Shell(null, null, null, new XTermDisplay(terminal), null);
         shellProgram.main([]).then((exitCode: number) => {
             if (exitCode) {
                 terminal.writeln(`Error: Shell exited with code ${exitCode}`);

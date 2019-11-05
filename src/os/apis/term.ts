@@ -1,7 +1,6 @@
 
 export interface TermApi {
     getSize(): Promise<TerminalSize>;
-    setCursorPosition(x: number, y: number): Promise<boolean>;
     setCursorPosition(position: CursorPosition): Promise<boolean>;
     getCursorPosition(): Promise<CursorPosition>;
     clear(): Promise<void>;
@@ -13,6 +12,6 @@ export interface TerminalSize {
 }
 
 export interface CursorPosition {
-    x: number,
-    y: number
+    x: number;
+    y: number;
 }
