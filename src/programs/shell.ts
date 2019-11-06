@@ -1,32 +1,28 @@
-import { Program } from "../program";
-import { Environment, KeyEvent, CharacterEvent } from "../environment";
-import { Terminal } from "xterm";
+import { Process } from "../os/process";
+import { CharacterEvent } from "../environment";
 
-export class Shell implements Program {
-    static Program = new Shell();
+export class Shell extends Process {
+    static Name = 'shell';
 
-    name = 'shell';
-
-    async main(system: Environment): Promise<number> {
-        this.printOs(system);
-        await this.prompt(system);
+    async main(args: string[]): Promise<number> {
+        await this.printOs();
+        this.prompt();
 
         while (true) {
-            var event = await system.os.pollEvent();
+            var event = await this.os.pollEvent();
             if (event instanceof CharacterEvent) {
-                system.console.write(event.character);
+                this.io.stdout.write(event.character);
             }
         }
     }
 
-    private printOs(system: Environment) {
-        system.console.clear();
-        system.console.write(system.os.getVersion() + "\r\n");
+    private async printOs(): Promise<void> {
+        await this.term.clear();
+        await this.io.stdout.writeLine(this.os.getName());
     }
 
-    private async prompt(system: Environment): Promise<void> {
-        system.console.write(JSON.stringify(await system.console.getCursorPos()) + "\r\n");
-        system.console.write(JSON.stringify(await system.console.getCursorPos()) + "\r\n");
-        system.console.write("> ");
+    private async prompt(): Promise<string> {
+        await this.io.stdout.write("> ");
+        return await this.io.stdin.readLine();
     }
 }

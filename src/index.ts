@@ -24,10 +24,7 @@ import { ALongTimeAgo } from './programs/alongtimeago';
             }
         });
 
-        let virtualMachine = new Machine([
-            Shell.Program,
-            ALongTimeAgo.Program
-        ]);
+        let virtualMachine = new Machine();
 
         nativeTerm.loadAddon(virtualMachine);
         nativeTerm.open(terminalElement);
