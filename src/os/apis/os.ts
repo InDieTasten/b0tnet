@@ -13,5 +13,8 @@ export class OsEvent {
 
 export class TimeoutEvent extends OsEvent {
     type = 'timeout';
-    timerId: Symbol;
+
+    constructor(public timerId: Symbol) {
+        super();
+    }
 }

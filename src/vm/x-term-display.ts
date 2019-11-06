@@ -1,8 +1,8 @@
 import { Terminal, IDisposable } from "xterm";
 import { TermApi, TerminalSize, CursorPosition } from "../os/apis/term";
-import { IoApi } from "../os/apis/io";
+import { OutputStream } from "../os/apis/io";
 
-export class XTermDisplay implements TermApi, IDisposable {
+export class XTermDisplay implements TermApi, OutputStream, IDisposable {
     private disposables: IDisposable[] = [];
     
     private xterm: Terminal;
@@ -18,6 +18,16 @@ export class XTermDisplay implements TermApi, IDisposable {
         }));
     }
     
+    writeCharacter(character: string): Promise<void> {
+        if (character && character.length === 1) {
+            return this.write(character);
+        } else {
+            return Promise.resolve();
+        }
+    }
+    writeLine(line: string): Promise<void> {
+        return this.write(line + '\n');
+    }
     getSize(): Promise<TerminalSize> {
         throw new Error("Method not implemented.");
     }
@@ -32,14 +42,14 @@ export class XTermDisplay implements TermApi, IDisposable {
         this.xterm.write("\x1b[6n"); // device status report DSR
         let resolver: (value?: CursorPosition | PromiseLike<CursorPosition>) => void;
         let promise = new Promise<CursorPosition>((resolve: (value?: CursorPosition | PromiseLike<CursorPosition>)
-            => void) => resolver = resolve);
+        => void) => resolver = resolve);
         let disposable = this.xterm.onData((data) => {
             let match = data.match(/^\x1B\[(\d+);(\d+)R$/);
-            
-            if (match !== null && match.length == 3) {
-                resolver({
-                    x: parseInt(match[2]),
-                    y: parseInt(match[1])
+                
+                if (match !== null && match.length == 3) {
+                    resolver({
+                        x: parseInt(match[2]),
+                        y: parseInt(match[1])
                 });
                 disposable.dispose();
             }
@@ -48,9 +58,9 @@ export class XTermDisplay implements TermApi, IDisposable {
         return promise;
     }
 
-    // expose this as io.OutputStream
-    write(text: string): void {
-        this.xterm.write(text);
+    write(text: string): Promise<void> {
+        this.xterm.write(text.replace(/\n/g, "\r\n"));
+        return Promise.resolve();
     }
     clear(): Promise<void> {
         this.xterm.clear();

@@ -1,29 +1,17 @@
 import { Terminal, IDisposable, ITerminalAddon } from "xterm";
-import { Environment, OsEvent, CharacterEvent } from "./environment";
+import { OsEvent, CharacterEvent } from "./environment";
 import { XTermDisplay } from "./vm/x-term-display";
 import { Shell } from "./programs/shell";
-import { MemoryStream } from "./os/io";
+import { BrowserOs } from "./os/browser-os";
+import { ALongTimeAgo } from "./programs/alongtimeago";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
-    private environment: Environment = new Environment();
     private eventQueue: OsEvent[] = [];
     private eventResolvers: Array<(value?: OsEvent | PromiseLike<OsEvent>) => void> = [];
 
     activate(terminal: Terminal): void {
         terminal.writeln("Initializing runtime environment...");
-        this.environment = {
-            os: {
-                pollEvent: (): Promise<OsEvent> => {
-                    return new Promise<OsEvent>((resolve: (value?: OsEvent | PromiseLike<OsEvent>)
-                        => void) => this.eventResolvers.push(resolve))
-                },
-                queueEvent: (event: OsEvent) => {
-                    this.eventQueue.push(event);
-                },
-                getVersion: () => "HackOS v0.1"
-            }
-        };
 
         this._disposables.push(terminal.onData((data) => {
             if (data.length === 1) {
@@ -44,7 +32,10 @@ export class Machine implements ITerminalAddon {
         terminal.writeln("Machine launched successfully!");
         terminal.writeln("Launching shell...");
 
-        let shellProgram = new Shell(null, null, null, new XTermDisplay(terminal), null);
+        let display = new XTermDisplay(terminal);
+        let os = new BrowserOs();
+
+        let shellProgram = new ALongTimeAgo({ stdin: null, stdout: display }, null, null, display, os);
         shellProgram.main([]).then((exitCode: number) => {
             if (exitCode) {
                 terminal.writeln(`Error: Shell exited with code ${exitCode}`);
