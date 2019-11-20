@@ -1,7 +1,6 @@
 import { FileSystem } from "./filesystem"
 
 export class Drive {
-
     /**
      * Drive capacity in KiB
      */

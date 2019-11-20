@@ -1,4 +1,6 @@
 import { Drive } from "./drive"
+import { Process } from "../os/process";
+import { FsApi, FileMode, FileReadHandle, FileWriteHandle } from "../os/apis/fs";
 
 class FsNode {
     
@@ -36,17 +38,18 @@ export class Directory extends FsNode {
 
 export class File extends FsNode {
     
-    private _content : string;
-    public get content() : string {
+    private _content: string;
+
+    public get content(): string {
         return this._content;
     }
-    public set content(v : string) {
+    public set content(v: string) {
         this._content = v;
     }
     
 }
 
-export class FileSystem {
+export class FileSystem implements FsApi {
 
     private _rootNodes : FsNode[];
     public get rootNodes() : FsNode[] {
@@ -70,5 +73,18 @@ export class FileSystem {
      */
     constructor(drive: Drive) {
         this.drive = drive;
+    }
+
+    combine(pathSegments: string[]): string {
+        throw new Error("Method not implemented.");
+    }
+    isFile(path: string): boolean {
+        throw new Error("Method not implemented.");
+    }
+    isDirectory(path: string): boolean {
+        throw new Error("Method not implemented.");
+    }
+    exists(path: string): boolean {
+        throw new Error("Method not implemented.");
     }
 }

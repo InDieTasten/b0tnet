@@ -29,7 +29,7 @@ export class XTermDisplay implements TermApi, OutputStream, IDisposable {
         return this.write(line + '\n');
     }
     getSize(): Promise<TerminalSize> {
-        throw new Error("Method not implemented.");
+        return Promise.resolve({ width: this.xterm.cols, height: this.xterm.rows });
     }
     setCursorPosition(position: CursorPosition): Promise<boolean> {
         if (position.x > 0 && position.x <= this.xterm.cols && position.y > 0 && position.y <= this.xterm.rows) {

@@ -1,9 +1,9 @@
 import { InputStream, OutputStream } from "./io";
 
 export interface FsApi {
-    open(path: string, mode: FileMode.read): Promise<FileReadHandle>;
-    open(path: string, mode: FileMode.write): Promise<FileWriteHandle>;
-    open(path: string, mode: FileMode.append): Promise<FileWriteHandle>;
+    // open(path: string, mode: FileMode.read): Promise<FileReadHandle>;
+    // open(path: string, mode: FileMode.write): Promise<FileWriteHandle>;
+    // open(path: string, mode: FileMode.append): Promise<FileWriteHandle>;
 
     combine(pathSegments: string[]): string;
     
