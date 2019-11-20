@@ -24,7 +24,7 @@ export class BrowserOs implements OsApi {
         return timerId;
     }
     sleep(duration: number): Promise<void> {
-        throw new Error("Method not implemented.");
+        return new Promise(resolve => setTimeout(() => resolve(), duration));
     }
 
     private publishEvents(): void {
