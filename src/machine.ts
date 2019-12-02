@@ -5,6 +5,7 @@ import { Shell } from "./programs/shell";
 import { BrowserOs } from "./os/browser-os";
 import { ALongTimeAgo } from "./programs/alongtimeago";
 import { IgniteProgram } from "./programs/ignite";
+import { RaytraceProgram } from "./programs/raytrace/main";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
@@ -36,7 +37,7 @@ export class Machine implements ITerminalAddon {
         let display = new XTermDisplay(terminal);
         let os = new BrowserOs();
 
-        let shellProgram = new IgniteProgram({ stdin: null, stdout: display }, null, null, display, os);
+        let shellProgram = new RaytraceProgram({ stdin: null, stdout: display }, null, null, display, os);
         shellProgram.main([]).then((exitCode: number) => {
             if (exitCode) {
                 terminal.writeln(`Error: Shell exited with code ${exitCode}`);

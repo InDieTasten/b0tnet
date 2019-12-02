@@ -66,17 +66,11 @@ export class IgniteProgram extends Process {
         while (true) {
             let event = await this.os.pollEvent();
             if (event instanceof TimeoutEvent) {
+                timer = this.os.startTimer(30);
                 this.drawGrid(this.flamingGrid);
                 this.smoothHeatGrid();
-
-
-                //this.flamingGrid[24][Math.floor(Math.random() * (this.flamingGrid[0].length-1))] = 100;
-                // this.flamingGrid[24][40] = 1;
-                // this.flamingGrid[24][41] = 1;
-                
                 this.coolingOffsetX++;
-                this.coolingOffsetY++;
-                timer = this.os.startTimer(50);
+                this.coolingOffsetY+=2;
             }
         }
 
