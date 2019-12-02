@@ -1,6 +1,6 @@
 import { Process } from "../../os/process";
 import { TimeoutEvent } from "../../os/apis/os";
-import { ansiReset, ansiBackgroundTrueColor } from "../helpers/color256";
+import { ansiReset, ansiBackgroundTrueColor, ansiTextTrueColor } from "../helpers/color256";
 import { Vector3f } from "./vector3f";
 import { Material } from "./material";
 import { Sphere } from "./sphere";
@@ -30,7 +30,7 @@ export class RaytraceProgram extends Process {
 
         const terminalSize = await this.term.getSize();
         this.width = terminalSize.width;
-        this.height = terminalSize.height;
+        this.height = terminalSize.height * 2;
         this.framebuffer = [];
 
         let scene = new Scene([
@@ -54,12 +54,26 @@ export class RaytraceProgram extends Process {
     }
 
     private async display(): Promise<void> {
-        await this.io.stdout.write(ansiReset() + "\n\n" + this.framebuffer.map(pixel => {
+
+        let normalizePixelComponents = (pixel: Vector3f): Vector3f => {
             let maxComponent = Math.max(pixel.x, pixel.y, pixel.z);
             if (maxComponent > 1)
                 pixel = pixel.multiplyScalar(1 / maxComponent);
-            return ansiBackgroundTrueColor(pixel.x, pixel.y, pixel.z) + ' ';
-        }).join(''));
+            return pixel;
+        }
+
+        let charBuffer = '';
+        for (let y = 0; y < this.height; y+=2)
+            for (let x = 0; x < this.width; x++) {
+                let topPixel = normalizePixelComponents(this.framebuffer[y * this.width + x]);
+                let bottomPixel = normalizePixelComponents(this.framebuffer[(y+1) * this.width + x]);
+
+                charBuffer += (ansiTextTrueColor(topPixel.x, topPixel.y, topPixel.z)
+                    + ansiBackgroundTrueColor(bottomPixel.x, bottomPixel.y, bottomPixel.z)
+                    + '\u2580');
+            }
+
+        await this.io.stdout.write(ansiReset() + "\n\n" + charBuffer);
     }
 
     private render(scene: Scene) {
@@ -109,7 +123,7 @@ export class RaytraceProgram extends Process {
             let specularLightIntensity = 0;
             scene.lights.forEach(light => {
                 let lightDirection = light.position.subtract(closestPoint).normalize();
-                
+
 
                 diffuseLightIntensity += light.intensity * Math.max(0, lightDirection.dot(normal));
 
