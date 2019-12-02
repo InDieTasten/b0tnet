@@ -33,8 +33,8 @@ export class RaytraceProgram extends Process {
         this.height = terminalSize.height * 2;
         this.framebuffer = [];
 
-        let ball1 = new Sphere(new Vector3f(4, 0, -10), 3, new Material(0.6, 0.3, new Vector3f(0.2, 0, 0), 40));
-        let ball2 = new Sphere(new Vector3f(-4, 0, -7), 2, new Material(0.9, 0.1, new Vector3f(0, 0, 0.2), 10));
+        let ball1 = new Sphere(new Vector3f(4, 0, -10), 3, new Material(0.5, 0.3, new Vector3f(0.2, 0, 0), 40));
+        let ball2 = new Sphere(new Vector3f(-4, 0, -7), 2, new Material(0.9, 0.05, new Vector3f(.1, .1, 0.1), 10));
         let light1 = new PointLight(new Vector3f(3, -2, -3), 5);
         let scene = new Scene([
             ball1,
@@ -50,14 +50,15 @@ export class RaytraceProgram extends Process {
             const event = await this.os.pollEvent();
             if (event instanceof TimeoutEvent && event.timerId === timerId) {
                 timerId = this.os.startTimer(10);
+
                 t += 0.05;
                 ball1.center.x = Math.sin(t)*3;
                 ball1.center.y = Math.cos(t)*3;
                 ball2.center.x = Math.sin(t*1.5)*3;
                 ball2.center.y = Math.cos(t*1.5)*3;
-                light1.intensity = Math.sin(t*3)*3+3;
-                //scene.objects.forEach(object => object.center = object.center.add(new Vector3f(0, 0, 0.01)));
-                //scene.lights.forEach(light => light.position = light.position.add(new Vector3f(0, 0, 0.01)));
+                ball2.center.z = Math.sin(t/2)*5 - 10;
+                light1.intensity = Math.sin(t*5)*3+3;
+
                 this.render(scene);
                 this.display();
             }
