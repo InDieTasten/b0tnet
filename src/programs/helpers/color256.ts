@@ -15,7 +15,7 @@ export function rgbTo256(r: number, g: number, b: number): number {
     let gIndex = steps.indexOf(gComponent);
     let bIndex = steps.indexOf(bComponent);
 
-    return rIndex * 24 + gIndex * 6 + bIndex + 16;
+    return rIndex * 36 + gIndex * 6 + bIndex + 16;
 }
 
 export function ansiTextColor(colorCode: number): string {
@@ -23,6 +23,12 @@ export function ansiTextColor(colorCode: number): string {
 }
 export function ansiBackgroundColor(colorCode: number): string {
     return `\x1b[48;5;${colorCode}m`;
+}
+export function ansiTextTrueColor(r: number, g: number, b: number): string {
+    return `\x1b[38;2;${Math.floor(r*255)};${Math.floor(g*255)};${Math.floor(b*255)}m`;
+}
+export function ansiBackgroundTrueColor(r: number, g: number, b: number): string {
+    return `\x1b[48;2;${Math.floor(r*255)};${Math.floor(g*255)};${Math.floor(b*255)}m`;
 }
 export function ansiReset(): string {
     return `\x1b[0m`;

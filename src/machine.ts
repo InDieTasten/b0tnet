@@ -5,7 +5,7 @@ import { Shell } from "./programs/shell";
 import { BrowserOs } from "./os/browser-os";
 import { ALongTimeAgo } from "./programs/alongtimeago";
 import { IgniteProgram } from "./programs/ignite";
-import { RaytraceProgram } from "./programs/raytrace";
+import { RaytraceProgram } from "./programs/raytrace/main";
 
 export class Machine implements ITerminalAddon {
     private _disposables: IDisposable[] = [];
