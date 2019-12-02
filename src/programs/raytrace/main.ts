@@ -21,7 +21,7 @@ class Scene {
 
 export class RaytraceProgram extends Process {
 
-    private fov: number = Math.PI / 2; // 90 degrees
+    private fov: number = Math.PI / 3; // 60 degrees
     private width: number;
     private height: number;
     private framebuffer: Vector3f[];
@@ -33,20 +33,31 @@ export class RaytraceProgram extends Process {
         this.height = terminalSize.height * 2;
         this.framebuffer = [];
 
+        let ball1 = new Sphere(new Vector3f(4, 0, -10), 3, new Material(0.6, 0.3, new Vector3f(0.2, 0, 0), 40));
+        let ball2 = new Sphere(new Vector3f(-4, 0, -7), 2, new Material(0.9, 0.1, new Vector3f(0, 0, 0.2), 10));
+        let light1 = new PointLight(new Vector3f(3, -2, -3), 5);
         let scene = new Scene([
-            new Sphere(new Vector3f(4, 0, -5), 3, new Material(0.6, 0.3, new Vector3f(0.2, 0, 0), 50)),
-            new Sphere(new Vector3f(-4, 0, -5), 3, new Material(0.9, 0.1, new Vector3f(0, 0, 0.2), 10))
+            ball1,
+            ball2
         ], [
-            new PointLight(new Vector3f(-3, -2, 0), 5)
+            light1,
+            new PointLight(new Vector3f(-5, 0, 0), 3)
         ]);
 
         let timerId = this.os.startTimer(0);
+        let t = 1;
         while (true) {
             const event = await this.os.pollEvent();
             if (event instanceof TimeoutEvent && event.timerId === timerId) {
                 timerId = this.os.startTimer(10);
-                scene.objects.forEach(object => object.center = object.center.add(new Vector3f(0, 0, 0.01)));
-                scene.lights.forEach(light => light.position = light.position.add(new Vector3f(0, 0, 0.01)));
+                t += 0.05;
+                ball1.center.x = Math.sin(t)*3;
+                ball1.center.y = Math.cos(t)*3;
+                ball2.center.x = Math.sin(t*1.5)*3;
+                ball2.center.y = Math.cos(t*1.5)*3;
+                light1.intensity = Math.sin(t*3)*3+3;
+                //scene.objects.forEach(object => object.center = object.center.add(new Vector3f(0, 0, 0.01)));
+                //scene.lights.forEach(light => light.position = light.position.add(new Vector3f(0, 0, 0.01)));
                 this.render(scene);
                 this.display();
             }
