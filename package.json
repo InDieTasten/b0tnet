@@ -27,6 +27,6 @@
     "url": "https://github.com/InDieTasten/b0tnet.git"
   },
   "dependencies": {
-    "xterm": "^4.15.0"
+    "xterm": "^4.16.0"
   }
 }
