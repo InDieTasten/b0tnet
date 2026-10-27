@@ -1,0 +1,25 @@
+name: Release
+
+# The site as last published on gh-pages, as an nginx image (shared image.yml of InDieTasten/.github, pages: true):
+#   pull_request -> build only (the check: `image / build`)
+#   master       -> ghcr.io/indietasten/b0tnet:sha-<short> and :edge, then the lab redeploys the b0tnet stack
+#                   at https://b0tnet.indietasten.net; this run fails if it doesn't come up
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  image:
+    uses: InDieTasten/.github/.github/workflows/image.yml@main
+    with:
+      image: b0tnet
+      pages: true
+      stack: b0tnet
+      url: https://b0tnet.indietasten.net
