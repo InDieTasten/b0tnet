@@ -1,3 +1,4 @@
 site/.git
 site/CNAME
 site/.nojekyll
+node_modules
