@@ -1,0 +1,23 @@
+name: PR preview
+
+# Builds the image for every PR (the build is the CI check: `preview / build`) and, for PRs from this repository, runs
+# it at https://b0tnet-pr-<N>.dev.indietasten.net; removed when the PR is closed. The steps live in InDieTasten/.github.
+# The preview uses Dockerfile.preview, which builds the site from the branch's source - the release image serves the
+# frozen gh-pages build and would not show what a PR changes.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+  pull-requests: write
+  deployments: write
+
+jobs:
+  preview:
+    uses: InDieTasten/.github/.github/workflows/preview.yml@main
+    with:
+      image: b0tnet
+      file: Dockerfile.preview
