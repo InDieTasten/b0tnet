@@ -17,7 +17,6 @@ import { ALongTimeAgo } from './programs/alongtimeago';
             scrollback: 0,
             fontSize: 22,
             cursorBlink: false,
-            rendererType: "canvas",
             allowTransparency: true,
             theme: {
                 background: "rgba(0,0,0,0)"
